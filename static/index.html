@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FarmAssist AI is an intelligent agricultural assistant that detects crop diseases, provides treatment advice, tracks local weather risks, and monitors market trends.">
+    <title>FarmAssist AI – Smart Farming Agent</title>
+    <!-- Google Fonts: Outfit for Headings, Inter for Body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for Market Trends -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-mode">
+    <div class="background-decor">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <div>
+                    <h1 id="app-title">FarmAssist AI</h1>
+                    <p class="tagline">Smart Farming Agent Network</p>
+                </div>
+            </div>
+            
+            <div class="global-controls">
+                <div class="control-group">
+                    <label for="farmer-location"><i class="fa-solid fa-location-dot"></i></label>
+                    <input type="text" id="farmer-location" value="California, USA" placeholder="Enter your region...">
+                </div>
+                <div class="control-group">
+                    <label for="farmer-crop"><i class="fa-solid fa-seedling"></i></label>
+                    <select id="farmer-crop">
+                        <option value="Tomato">Tomato</option>
+                        <option value="Wheat">Wheat</option>
+                        <option value="Rice">Rice</option>
+                        <option value="Potato">Potato</option>
+                        <option value="Corn">Corn</option>
+                    </select>
+                </div>
+                <button id="theme-toggle" class="btn-icon" aria-label="Toggle Dark/Light Mode">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- DASHBOARD GRID -->
+        <main class="dashboard-grid">
+            
+            <!-- AGENT 1 & 3: CROP DISEASE & TREATMENT -->
+            <section class="card glass-panel" id="agent-disease-treatment-section">
+                <div class="card-header">
+                    <div class="agent-badge disease-badge">
+                        <i class="fa-solid fa-microscope"></i> Agent 1 & 3
+                    </div>
+                    <h2>Crop Health & Treatment</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-intro">Upload a photo of crop leaves to analyze symptoms, diagnose diseases, and obtain organic/chemical treatment plans.</p>
+                    
+                    <div class="upload-zone" id="crop-image-dropzone">
+                        <input type="file" id="crop-image-input" accept="image/*" style="display: none;">
+                        <div class="upload-placeholder" id="upload-placeholder-content">
+                            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                            <p class="upload-text-main">Drag & drop crop image here</p>
+                            <p class="upload-text-sub">or click to browse from device</p>
+                        </div>
+                        <div class="image-preview-container" id="image-preview-container" style="display: none;">
+                            <img id="image-preview" src="" alt="Uploaded Crop Image">
+                            <button id="remove-image-btn" class="btn-remove"><i class="fa-solid fa-xmark"></i></button>
+                        </div>
+                    </div>
+
+                    <button id="btn-analyze-health" class="btn-primary" disabled>
+                        <i class="fa-solid fa-circle-play"></i> Run Health Diagnostic
+                    </button>
+
+                    <!-- Loader -->
+                    <div class="agent-loader" id="health-loader" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Crop Disease & Treatment Agents coordinating...</p>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="agent-results" id="health-results" style="display: none;">
+                        <div class="result-header">
+                            <div class="diagnosis-summary">
+                                <h3 id="detected-disease">Early Blight</h3>
+                                <div class="badge-row">
+                                    <span class="badge" id="detected-crop">Tomato</span>
+                                    <span class="badge badge-alert" id="health-confidence">High Confidence</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Tabs -->
+                        <div class="tabs-control">
+                            <button class="tab-btn active" id="tab-diagnosis-btn">Diagnosis</button>
+                            <button class="tab-btn" id="tab-treatment-btn">Treatment Plan</button>
+                        </div>
+
+                        <div class="tab-content" id="tab-diagnosis-content">
+                            <div class="explanation-box">
+                                <h4>Expert Assessment:</h4>
+                                <p id="diagnosis-explanation">Early Blight (Alternaria solani) detected on the leaves.</p>
+                            </div>
+                            <div class="symptoms-list-box">
+                                <h4>Observed Symptoms:</h4>
+                                <ul id="symptoms-list">
+                                    <!-- Symptoms list populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="tab-treatment-content" style="display: none;">
+                            <div class="treatment-grid">
+                                <div class="treatment-col">
+                                    <h4><i class="fa-solid fa-seedling text-organic"></i> Organic / Cultural Control</h4>
+                                    <ul id="organic-treatments">
+                                        <!-- Populated dynamically -->
+                                    </ul>
+                                </div>
+                                <div class="treatment-col">
+                                    <h4><i class="fa-solid fa-flask text-chemical"></i> Chemical Treatments</h4>
+                                    <ul id="chemical-treatments">
+                                        <!-- Populated dynamically -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="treatment-full-width">
+                                <h4><i class="fa-solid fa-shield-halved text-prevent"></i> Prevention & Best Practices</h4>
+                                <ul id="preventive-measures">
+                                    <!-- Populated dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RIGHT PANEL: WEATHER & MARKET -->
+            <div class="secondary-column">
+                
+                <!-- AGENT 2: WEATHER AGENT -->
+                <section class="card glass-panel" id="agent-weather-section">
+                    <div class="card-header">
+                        <div class="agent-badge weather-badge">
+                            <i class="fa-solid fa-cloud-sun-rain"></i> Agent 2
+                        </div>
+                        <h2>Weather Risk Guard</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="inline-search">
+                            <button id="btn-sync-weather" class="btn-secondary">
+                                <i class="fa-solid fa-rotate"></i> Analyze Local Risks
+                            </button>
+                        </div>
+
+                        <!-- Loader -->
+                        <div class="agent-loader" id="weather-loader" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Weather Agent analyzing crop vulnerabilities...</p>
+                        </div>
+
+                        <div class="weather-results" id="weather-results">
+                            <!-- Weather Alert Banners -->
+                            <div class="alerts-container" id="weather-alerts">
+                                <!-- Populated dynamically -->
+                            </div>
+
+                            <!-- Weekly Forecast -->
+                            <div class="forecast-container">
+                                <h3>7-Day Agronomic Forecast</h3>
+                                <div class="forecast-row" id="forecast-row">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AGENT 4: MARKET AGENT -->
+                <section class="card glass-panel" id="agent-market-section">
+                    <div class="card-header">
+                        <div class="agent-badge market-badge">
+                            <i class="fa-solid fa-chart-line"></i> Agent 4
+                        </div>
+                        <h2>Market Intelligence</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="inline-search">
+                            <button id="btn-sync-market" class="btn-secondary">
+                                <i class="fa-solid fa-rotate"></i> Retrieve Market Intel
+                            </button>
+                        </div>
+
+                        <!-- Loader -->
+                        <div class="agent-loader" id="market-loader" style="display: none;">
+                            <div class="spinner"></div>
+                            <p>Market Agent retrieving pricing & predictions...</p>
+                        </div>
+
+                        <div class="market-results" id="market-results">
+                            <!-- Current Price Badge -->
+                            <div class="price-header">
+                                <div class="price-value-container">
+                                    <span class="price-label">Estimated Wholesale Price</span>
+                                    <span class="price-value" id="market-current-price">$45.00</span>
+                                    <span class="price-unit" id="market-unit">per quintal</span>
+                                </div>
+                                <div class="trend-badge positive" id="market-trend-indicator">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> Forecast Bullish
+                                </div>
+                            </div>
+
+                            <!-- Chart -->
+                            <div class="chart-container">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+
+                            <!-- Nearby Markets -->
+                            <div class="markets-container">
+                                <h3>Nearby Markets Comparison</h3>
+                                <div class="market-list" id="nearby-markets-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Strategic Insights -->
+                            <div class="insights-box">
+                                <h4><i class="fa-solid fa-lightbulb"></i> Agent Sales Strategy:</h4>
+                                <p id="market-insights-text">Prices are trending upward due to low supply. Sell some crop now and hold high-quality yield for later.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+        
+        <footer class="app-footer">
+            <p>&copy; 2026 FarmAssist AI. Built with Google Gemini Agents for Good.</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
